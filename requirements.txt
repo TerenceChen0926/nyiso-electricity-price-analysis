@@ -1,0 +1,7 @@
+# Direct dependencies; reference environment: Python 3.12.14 on Windows.
+pandas==3.0.1
+numpy==2.3.5
+matplotlib==3.11.2
+reportlab==4.4.9
+pypdf==6.10.0
+tzdata==2026.5
