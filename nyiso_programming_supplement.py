@@ -17,13 +17,13 @@ import matplotlib
 matplotlib.use("Agg")
 
 # BEGIN_PAGE_1
+# GitHub: https://github.com/TerenceChen0926/nyiso-electricity-price-analysis
 # Hourly NYISO prices offer a real-world case for DST-aware time-series analysis.
 # This workflow combines data cleaning, custom functions, and price visualization.
 from pathlib import Path
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-
 csv_path = Path(__file__).with_name("nyiso_day_ahead.csv")
 FIELDS = {"Eastern Date Hour": "wall", "Zone Name": "zone",
           "Eastern Date Hour Time Zone": "tz", "Zone PTID": "ptid",
@@ -226,6 +226,10 @@ def build_supplement(out_dir, results, figure_path):
                 raise ValueError(f"Code line exceeds page width: {row}")
             comment = row.lstrip().startswith("#")
             line(row, y, 10, code_font, muted if comment else ink)
+            if row.startswith("# GitHub: "):
+                c.linkURL(row.removeprefix("# GitHub: "),
+                          (left, y - 2, left + pdfmetrics.stringWidth(row, code_font, 10),
+                           y + 10), relative=0, thickness=0)
             y -= 12.0
         return y
 
@@ -278,15 +282,26 @@ def build_supplement(out_dir, results, figure_path):
     line("* Partial months: " + partial_text + ". Prices use simple hourly means, without load weights.",
          note_y, 8.1, color=muted)
     findings = [
-        f"Prices above the full-sample p95 (> {stats['p95']:.3f} USD/MWh) occur in "
-        f"{results['high_price_hours']} hours; "
-        f"{results['jan_feb_share_of_high_hours']:.1%} fall in Jan-Feb 2026.",
+        f"Of the {results['high_price_hours']} hours above the full-sample 95th percentile, "
+        f"{results['jan_feb_share_of_high_hours']:.1%} occurred in January-February 2026, "
+        "making this period a priority for further investigation of high-price exposure.",
         "The heatmap also shows higher mean prices in late-afternoon/evening hours in several months.",
         "These are descriptive patterns in this rolling year, not causal explanations or a forecasting test.",
     ]
-    for i, text in enumerate(findings):
-        line(text, note_y - 17 - 12 * i, 8.5)
-    if note_y - 41 < 42:
+    finding_y = note_y - 17
+    for text in findings:
+        row = ""
+        for word in text.split():
+            candidate = f"{row} {word}".strip()
+            if pdfmetrics.stringWidth(candidate, "Helvetica", 8.5) > width:
+                line(row, finding_y, 8.5)
+                finding_y -= 12
+                row = word
+            else:
+                row = candidate
+        line(row, finding_y, 8.5)
+        finding_y -= 12
+    if finding_y + 12 < 42:
         raise ValueError("Page 2 content overlaps footer.")
     footer(2)
     c.save()
