@@ -40,7 +40,7 @@ These findings describe this rolling year; they do not establish causal relation
 
 ![Daily mean prices, seven-day moving average, and year-month-by-hour heatmap](nyiso_price_patterns.png)
 
-[View the two-page code and output sample](NYISO_UChicago_Programming_Supplement_With_Intro_Comments.pdf)
+[View the two-page code and output sample](NYISO_UChicago_Programming_Supplement.pdf)
 
 ## Run locally
 
@@ -71,4 +71,4 @@ By default, the script saves these files beside itself:
 | `nyiso_month_hour_means.csv` | Mean prices by year-month and local hour |
 | `nyiso_audit_results.json` | Summary statistics and source checks |
 
-The generated PDF uses a shorter filename than the linked sample above. Close an existing output PDF before rerunning if a viewer has locked it. The script uses Consolas when available and otherwise falls back to Courier; no font files need to be included.
+Close an existing output PDF before rerunning if a viewer has locked it. The script uses Consolas when available and otherwise falls back to Courier; no font files need to be included.
